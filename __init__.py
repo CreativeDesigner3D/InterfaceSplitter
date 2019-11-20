@@ -10,13 +10,18 @@ bl_info = {
     "category": "3D View",
 }
 
+#TODO: FIND HOW HOW TO SWITCH TO COMPOSITOR SPACE
+
 from .ui import bp_view3d_ui_header
 from .ops import bp_ops
+from . import user_pref
 
 def register():
     bp_ops.register()
     bp_view3d_ui_header.register()
+    user_pref.register()
 
 def unregister():
     bp_ops.unregister()
     bp_view3d_ui_header.unregister()
+    user_pref.unregister()
