@@ -7,54 +7,44 @@ class InterfaceMenu(bpy.types.Menu):
 
     def draw_default_menu(self,layout):
         props = layout.operator("cd.split_region",text="Outliner",icon='OUTLINER')
-        props.space_type = 'OUTLINER'
+        props.ui_type = 'OUTLINER'
         props.split_direction = 'VERTICAL'
         props.split_factor = 20
 
         props = layout.operator("cd.split_region",text="Properties",icon='PROPERTIES')
-        props.space_type = 'PROPERTIES'
+        props.ui_type = 'PROPERTIES'
         props.split_direction = 'VERTICAL'
         props.split_factor = 20
 
         layout.separator()
 
         props = layout.operator("cd.split_region",text="Material Editor",icon='NODE_MATERIAL')
-        props.space_type = 'NODE_EDITOR'
-        props.space_mode = 'OBJECT'
-        props.split_direction = 'VERTICAL'
-        props.split_factor = 50
-
-        props = layout.operator("cd.split_region",text="World Editor",icon='WORLD_DATA')
-        props.space_type = 'NODE_EDITOR'
-        props.space_mode = 'WORLD'
+        props.ui_type = 'ShaderNodeTree'
         props.split_direction = 'VERTICAL'
         props.split_factor = 50
 
         props = layout.operator("cd.split_region",text="UV Editor",icon='UV')
-        props.space_type = 'IMAGE_EDITOR'
-        props.space_mode = 'UV'
+        props.ui_type = 'UV'
         props.split_direction = 'VERTICAL'
         props.split_factor = 50
 
         props = layout.operator("cd.split_region",text="Text Editor",icon='TEXT')
-        props.space_type = 'TEXT_EDITOR'
+        props.ui_type = 'TEXT_EDITOR'
         props.split_direction = 'VERTICAL'
         props.split_factor = 50
 
         layout.separator()
         
         props = layout.operator("cd.split_region",text="Timeline",icon='TIME')
-        props.space_type = 'DOPESHEET_EDITOR'
-        props.space_mode = 'TIMELINE'
+        props.ui_type = 'TIMELINE'
         props.split_direction = 'HORIZONTAL'
-        props.split_factor = 20
+        props.split_factor = 10
 
         layout = self.layout
         props = layout.operator("cd.split_region",text="Dope Sheet",icon='ACTION')
-        props.space_type = 'DOPESHEET_EDITOR'
-        props.space_mode = 'DOPESHEET'
+        props.ui_type = 'DOPESHEET'
         props.split_direction = 'HORIZONTAL'
-        props.split_factor = 20
+        props.split_factor = 10
 
     def draw(self, context):
         layout = self.layout
@@ -69,15 +59,13 @@ class InterfaceMenu(bpy.types.Menu):
                     layout.separator()
                 else:
                     props = layout.operator("cd.split_region",text=item.name,icon=item.get_icon())
-                    props.space_type = item.space_type
+                    props.ui_type = item.ui_type
                     props.split_direction = item.split_direction
                     props.split_factor = item.split_factor
-                    props.space_mode = item.set_space_mode()
 
 class CD_UL_menu_items(UIList):
     
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        # layout.label(text=item.name,icon_value=item.get_icon())
         if item.is_separator:
             layout.label(text="---Separator---")
         else:
@@ -87,7 +75,7 @@ class CD_UL_menu_items(UIList):
                 layout.label(text=item.name,icon='BLANK1')
         props = layout.operator('cd.delete_menu_item',icon='X',text="",emboss=False) 
         props.menu_item_name = item.name
-        props.space_type = item.space_type
+        props.ui_type = item.ui_type
         props.is_separator = item.is_separator
 
 def draw_item(self, context):

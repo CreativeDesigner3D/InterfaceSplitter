@@ -15,13 +15,6 @@ class cd_OT_add_menu_item(Operator):
     bl_idname = "cd.add_menu_item"
     bl_label = "Add Menu Item"
     bl_description = "This will add a menu item in the interface splitter menu"
-    
-    space_type: StringProperty(name="Space Type")
-    space_sub_type: StringProperty(name="Space Sub Type")
-    split_direction: StringProperty(name="Split Direction")
-    split_factor: FloatProperty(name="Factor")
-
-    sub_type_editors = {"DOPESHEET_EDITOR","IMAGE_EDITOR","CLIP_EDITOR"}
 
     def execute(self, context):
         preferences = context.preferences
@@ -37,14 +30,14 @@ class cd_OT_delete_menu_item(Operator):
     bl_description = "This will delete a menu item in the interface splitter menu"
     
     menu_item_name: StringProperty(name="Menu Item Name")
-    space_type: StringProperty(name="Space Type")
+    ui_type: StringProperty(name="Space Type")
     is_separator: BoolProperty(name="Is Separator")
 
     def execute(self, context):
         preferences = context.preferences
         addon_prefs = preferences.addons["InterfaceSplitter"].preferences
         for index, item in enumerate(addon_prefs.menu_items):
-            if item.name == self.menu_item_name and item.space_type == self.space_type and item.is_separator == self.is_separator:
+            if item.name == self.menu_item_name and item.ui_type == self.ui_type and item.is_separator == self.is_separator:
                 addon_prefs.menu_items.remove(index)
                 break
         return {'FINISHED'}
@@ -55,8 +48,7 @@ class cd_OT_split_region(Operator):
     bl_label = "Split Region"
     bl_description = "This will split the current interface"
     
-    space_type: StringProperty(name="Space Type")
-    space_mode: StringProperty(name="Space Mode")
+    ui_type: StringProperty(name="UI Type")
     split_direction: StringProperty(name="Split Direction")
     split_factor: FloatProperty(name="Factor",subtype='PERCENTAGE',min=0,max=100)
 
@@ -71,7 +63,6 @@ class cd_OT_split_region(Operator):
                 areas.append(area)
 
         #SPLIT CURRENT AREA
-        print(self.split_factor)
         bpy.ops.screen.area_split(direction=self.split_direction,factor=self.split_factor/100)
 
         #LOOK FOR NEW AREA THAT IS NOT IN LIST THEN SET THE TYPE
@@ -79,18 +70,7 @@ class cd_OT_split_region(Operator):
             screen = window.screen
             for area in screen.areas:
                 if area not in areas:
-                    area.type = self.space_type
-                    for space in area.spaces:
-                        if space.type == 'NODE_EDITOR':
-                            space.shader_type = self.space_mode
-                        if space.type == 'IMAGE_EDITOR':
-                            space.mode = self.space_mode
-                        if space.type == 'CLIP_EDITOR':
-                            space.mode = self.space_mode
-                        if space.type == 'DOPESHEET_EDITOR':
-                            space.mode = self.space_mode             
-                        if space.type == 'GRAPH_EDITOR':                            
-                            space.mode = self.space_mode      
+                    area.ui_type = self.ui_type   
 
         return {'FINISHED'}
 

@@ -10,57 +10,32 @@ from bpy.props import (
         EnumProperty,
         )
 
-space_types = [('VIEW_3D',"3D View","3D View"),
-               ('IMAGE_EDITOR',"Image Editor","Image Editor"),
-               ('NODE_EDITOR',"Node Editor","Node Editor"),
-               ('SEQUENCE_EDITOR',"Sequence Editor","Sequence Editor"),
-               ('CLIP_EDITOR',"Clip Editor","Clip Editor"),
-               ('DOPESHEET_EDITOR',"Dopesheet Editor","Dopesheet Editor"),
-               ('GRAPH_EDITOR',"Graph Editor","Graph Editor"),
-               ('NLA_EDITOR',"NLA Editor","NLA Editor"),
-               ('TEXT_EDITOR',"Text Editor","Text Editor"),
-               ('CONSOLE',"Console","Console"),
-               ('OUTLINER',"Outliner","Outliner"),
-               ('PROPERTIES',"Properties","Properties"),
-               ('FILE_BROWSER',"File Browser","File Browser"),
-               ('PREFERENCES',"Preferences","Preferences")]    
+ui_types = [('VIEW_3D',"3D View","3D View"),
+            ('VIEW',"Image Editor","Image Editor"),
+            ('UV',"UV Editor","UV Editor"),
+            ('ShaderNodeTree',"Shader Editor","Shader Editor"),
+            ('CompositorNodeTree',"Compositor Editor","Compositor Editor"),
+            ('TextureNodeTree',"Texture Node Editor","Texture Node Editor"),
+            ('SEQUENCE_EDITOR',"Video Sequencer","Video Sequencer"),
+            ('CLIP_EDITOR',"Movie Clip Editor","Movie Clip Editor"),
+            ('DOPESHEET',"Dope Sheet","Dope Sheet"),
+            ('TIMELINE',"Timeline","Timeline"),
+            ('FCURVES',"Graph Editor","Graph Editor"),
+            ('DRIVERS',"Drivers","Drivers"),
+            ('NLA_EDITOR',"Nonlinear Animation","Nonlinear Animation"),
+            ('TEXT_EDITOR',"Text Editor","Text Editor"),
+            ('CONSOLE',"Python Console","Python Console"),
+            ('INFO',"Info","Info"),
+            ('OUTLINER',"Outliner","Outliner"),
+            ('PROPERTIES',"Properties","Properties"),
+            ('FILE_BROWSER',"File Browser","File Browser"),
+            ('PREFERENCES',"Preferences","Preferences")]    
 
 split_directions = [('HORIZONTAL',"Horizontal","Horizontal"),
                     ('VERTICAL',"Vertical","Vertical")]
 
-sub_type_editors = {"DOPESHEET_EDITOR","IMAGE_EDITOR","CLIP_EDITOR"}
-
-image_editor_modes = [('VIEW',"View","View"),
-                      ('UV',"UV","UV"),
-                      ('PAINT',"Paint","Paint"),
-                      ('MASK',"Mask","Mask")]
-
-node_shader_type = [('OBJECT',"Object","Object"),
-                    ('WORLD',"World","World"),
-                    ('LINESTYLE',"Line Style","Line Style")]
-
-graph_editor_modes = [('FCURVES',"FCurves","FCurves"),
-                      ('DRIVERS',"Drivers","Drivers")]
-
-clip_editor_modes = [('TRACKING',"Tracking","Tracking"),
-                     ('MASK',"Mask","Mask")]
-
-dope_sheet_modes = [('DOPESHEET',"Dope Sheet","Dope Sheet"),
-                    ('TIMELINE',"Time Line","Time Line"),
-                    ('ACTION',"Action","Action"),
-                    ('SHAPEKEY',"Shape Key","Shape Key"),
-                    ('GPENCIL',"Grease Pencil","Grease Pencil"),
-                    ('MASK',"Mask","Mask"),
-                    ('CACHEFILE',"Cache File","Cache File")]
-
 class Menu_Item(PropertyGroup):
-    space_type: EnumProperty(name="Space Type",items=space_types)
-
-    image_editor_mode: EnumProperty(name="Mode",items=image_editor_modes)
-    node_editor_type: EnumProperty(name="Mode",items=node_shader_type)
-    clip_editor_mode: EnumProperty(name="Mode",items=clip_editor_modes)
-    graph_editor_mode: EnumProperty(name="Mode",items=graph_editor_modes)
-    dope_sheet_mode: EnumProperty(name="Mode",items=dope_sheet_modes)
+    ui_type: EnumProperty(name="UI Type",items=ui_types)
 
     split_direction: EnumProperty(name="Split Direction",items=split_directions)
     split_factor: FloatProperty(name="Factor",subtype='PERCENTAGE',min=0,max=100)
@@ -74,99 +49,62 @@ class Menu_Item(PropertyGroup):
         if self.use_custom_icon:
             return self.icon_name
 
-        if self.space_type == 'VIEW_3D':
+        if self.ui_type == 'VIEW_3D':
             return 'VIEW3D'
 
-        if self.space_type == 'IMAGE_EDITOR':
-            if self.image_editor_mode == 'VIEW':
-                return 'IMAGE'
-            if self.image_editor_mode == 'UV':
-                return 'UV'
-            if self.image_editor_mode == 'PAINT':
-                return 'IMAGE'
-            if self.image_editor_mode == 'MASK':
-                return 'IMAGE'              
+        if self.ui_type == 'VIEW':
+            return 'IMAGE'
 
-        if self.space_type == 'NODE_EDITOR':
-            if self.node_editor_type == 'OBJECT':
-                return 'NODE_MATERIAL'
-            if self.node_editor_type == 'WORLD':
-                return 'WORLD_DATA'
-            if self.node_editor_type == 'LINESTYLE':
-                return 'LINE_DATA'                      
+        if self.ui_type == 'UV':
+            return 'UV'
 
-        if self.space_type == 'SEQUENCE_EDITOR':
+        if self.ui_type == 'ShaderNodeTree':
+            return 'NODE_MATERIAL'
+
+        if self.ui_type == 'CompositorNodeTree':
+            return 'NODE_COMPOSITING'
+
+        if self.ui_type == 'TextureNodeTree':
+            return 'NODE_TEXTURE'                         
+
+        if self.ui_type == 'SEQUENCE_EDITOR':
             return 'SEQUENCE'        
 
-        if self.space_type == 'CLIP_EDITOR':
-            if self.clip_editor_mode == 'TRACKING':
-                return 'ANIM' 
-            if self.clip_editor_mode == 'MASK':
-                return 'OVERLAY'        
+        if self.ui_type == 'CLIP_EDITOR':
+            return 'TRACKER'
 
-        if self.space_type == 'DOPESHEET_EDITOR':
-            if self.dope_sheet_mode == 'DOPESHEET':
-                return 'ACTION'        
-            if self.dope_sheet_mode == 'TIMELINE':
-                return 'TIME'        
-            if self.dope_sheet_mode == 'ACTION':
-                return 'ARMATURE_DATA'   
-            if self.dope_sheet_mode == 'SHAPEKEY':
-                return 'SHAPEKEY_DATA'   
-            if self.dope_sheet_mode == 'GPENCIL':
-                return 'GREASEPENCIL'   
-            if self.dope_sheet_mode == 'MASK':
-                return 'OVERLAY'   
-            if self.dope_sheet_mode == 'CACHEFILE':
-                return 'FILE'   
+        if self.ui_type == 'DOPESHEET':
+            return 'CON_ACTION'
 
-        if self.space_type == 'GRAPH_EDITOR':
-            if self.graph_editor_mode == 'FCURVES':
-                return 'GRAPH'        
-            if self.graph_editor_mode == 'DRIVERS':
-                return 'AUTO'              
+        if self.ui_type == 'TIMELINE':
+            return 'TIME'
 
-        if self.space_type == 'NLA_EDITOR':
+        if self.ui_type == 'FCURVES':
+            return 'GRAPH'
+
+        if self.ui_type == 'DRIVERS':
+            return 'AUTO'
+
+        if self.ui_type == 'NLA_EDITOR':
             return 'NLA'        
-        if self.space_type == 'TEXT_EDITOR':
+
+        if self.ui_type == 'TEXT_EDITOR':
             return 'TEXT'        
-        if self.space_type == 'CONSOLE':
+
+        if self.ui_type == 'CONSOLE':
             return 'CONSOLE'        
-        if self.space_type == 'OUTLINER':
+
+        if self.ui_type == 'OUTLINER':
             return 'OUTLINER'        
-        if self.space_type == 'PROPERTIES':
+
+        if self.ui_type == 'PROPERTIES':
             return 'PROPERTIES'        
-        if self.space_type == 'FILE_BROWSER':
+
+        if self.ui_type == 'FILE_BROWSER':
             return 'FILEBROWSER'        
-        if self.space_type == 'PREFERENCES':
+
+        if self.ui_type == 'PREFERENCES':
             return 'PREFERENCES'                        
-
-    def draw_space_mode(self,layout):
-        if self.space_type == 'IMAGE_EDITOR':
-            layout.prop(self,'image_editor_mode')
-        elif self.space_type == 'NODE_EDITOR':
-            layout.prop(self,'node_editor_type')
-        elif self.space_type == 'DOPESHEET_EDITOR':
-            layout.prop(self,'dope_sheet_mode')            
-        elif self.space_type == 'CLIP_EDITOR':
-            layout.prop(self,'clip_editor_mode')
-        elif self.space_type == 'GRAPH_EDITOR':
-            layout.prop(self,'graph_editor_mode')        
-        else:
-            pass  
-
-    def set_space_mode(self):
-        if self.space_type == 'IMAGE_EDITOR':
-            return self.image_editor_mode
-        if self.space_type == 'NODE_EDITOR':
-            return self.node_editor_type
-        if self.space_type == 'CLIP_EDITOR':
-            return self.clip_editor_mode
-        if self.space_type == 'GRAPH_EDITOR':
-            return self.graph_editor_mode      
-        if self.space_type == 'DOPESHEET_EDITOR':
-            return self.dope_sheet_mode               
-        return ""     
 
 
 class InterfaceSplitter_Pref(AddonPreferences):
@@ -205,9 +143,7 @@ class InterfaceSplitter_Pref(AddonPreferences):
                     row = box.row()
                     row.prop(menu_item,'name')                
                     row = box.row()
-                    row.prop(menu_item,'space_type',text="Space")
-                    row = box.row()
-                    menu_item.draw_space_mode(row)
+                    row.prop(menu_item,'ui_type',text="Space")
                     row = box.row()
                     row.label(text="Split Direction:")
                     row = box.row()
