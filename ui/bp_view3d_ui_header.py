@@ -6,6 +6,11 @@ class InterfaceMenu(bpy.types.Menu):
     bl_idname = "VIEW_MT_interface_menu"
 
     def draw_default_menu(self,layout):
+        props = layout.operator("cd.split_region",text="Asset Library",icon='ASSET_MANAGER')
+        props.ui_type = 'FILE_BROWSER'
+        props.split_direction = 'VERTICAL'
+        props.split_factor = 30
+
         props = layout.operator("cd.split_region",text="Outliner",icon='OUTLINER')
         props.ui_type = 'OUTLINER'
         props.split_direction = 'VERTICAL'
@@ -87,9 +92,19 @@ classes = (
     CD_UL_menu_items,
 )
 
-register, unregister = bpy.utils.register_classes_factory(classes)
+def register():
+    for cs in classes:
+        bpy.utils.register_class(cs)
+    bpy.types.VIEW3D_MT_editor_menus.append(draw_item)
 
-bpy.types.VIEW3D_MT_editor_menus.append(draw_item)
+def unregister():
+    for cs in classes:
+        bpy.utils.unregister_class(cs)
+    bpy.types.VIEW3D_MT_editor_menus.remove(draw_item)
+
+# register, unregister = bpy.utils.register_classes_factory(classes)
+
+
 
 if __name__ == "__main__":
     register()                    
